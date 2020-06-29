@@ -27,8 +27,7 @@ const config = {
     '/rides': {
       get: {
         tags: ['CRUD operations'],
-        description: 'Get all user rides',
-        // operationId: 'getUsers',
+        description: 'Get all rides',
         parameters: [],
         responses: {
           '200': {
@@ -71,6 +70,61 @@ const config = {
           }
         }
       },
+      post: {
+        tags: ['CRUD operations'],
+        description: 'Create a new ride',
+        parameters: [],
+        requestBody: {
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/RidePostRequest'
+              }
+            }
+          },
+          required: true
+        },
+        responses: {
+          '200': {
+            description: 'Ride was successfully created',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Ride'
+                }
+              }
+            }
+          },
+          '400': {
+            description: 'Invalid parameters',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Error'
+                },
+                example: {
+                  error_code: 'VALIDATION_ERROR',
+                  message: 'Rider name must be a non empty string'
+                }
+              }
+            }
+          },
+          '500': {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Error'
+                },
+                example: {
+                  error_code: 'SERVER_ERROR',
+                  message: 'Unknown error'
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   components: {
@@ -161,6 +215,32 @@ const config = {
               $ref: '#/components/schemas/Ride'
             }
           }
+        }
+      },
+      RidePostRequest: {
+        type: 'object',
+        properties: {
+          startLat: {
+            $ref: '#/components/schemas/startLat'
+          },
+          startLong: {
+            $ref: '#/components/schemas/startLong'
+          },
+          endLat: {
+            $ref: '#/components/schemas/endLat'
+          },
+          endLong: {
+            $ref: '#/components/schemas/endLong'
+          },
+          riderName: {
+            $ref: '#/components/schemas/riderName'
+          },
+          driverName: {
+            $ref: '#/components/schemas/driverName'
+          },
+          driverVehicle: {
+            $ref: '#/components/schemas/driverVehicle'
+          },
         }
       },
       Error: {
