@@ -2,183 +2,163 @@ const config = {
   openapi: '3.0.1',
   info: {
     version: '1.3.0',
-    title: 'Users',
-    description: 'User management API',
-    termsOfService: 'http://api_url/terms/',
+    title: 'Rides',
+    description: 'This API provides endpoints to get all rides, get specific rides, and create new ride',
     contact: {
-      name: 'Wolox Team',
-      email: 'hello@wolox.co',
-      url: 'https://www.wolox.com.ar/'
+      name: 'Benedita Tanabi',
+      email: 'benedita.tan@gmail.com',
     },
-    license: {
-      name: 'Apache 2.0',
-      url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
-    }
   },
   servers: [
     {
-      url: 'http://localhost:3000/',
+      url: 'http://localhost:8010/',
       description: 'Local server'
     },
-    {
-      url: 'https://api_url_testing',
-      description: 'Testing server'
-    },
-    {
-      url: 'https://api_url_production',
-      description: 'Production server'
-    }
   ],
   tags: [
     {
       name: 'CRUD operations'
+    },
+    {
+      name: 'Health Check'
     }
   ],
   paths: {
-    '/users': {
+    '/rides': {
       get: {
         tags: ['CRUD operations'],
-        description: 'Get users',
-        operationId: 'getUsers',
-        parameters: [
-          {
-            name: 'x-company-id',
-            in: 'header',
-            schema: {
-              $ref: '#/components/schemas/companyId'
-            },
-            required: true,
-            description: 'Company id where the users work'
-          },
-          {
-            name: 'page',
-            in: 'query',
-            schema: {
-              type: 'integer',
-              default: 1
-            },
-            required: false
-          },
-          {
-            name: 'orderBy',
-            in: 'query',
-            schema: {
-              type: 'string',
-              enum: ['asc', 'desc'],
-              default: 'asc'
-            },
-            required: false
-          }
-        ],
+        description: 'Get all user rides',
+        // operationId: 'getUsers',
+        parameters: [],
         responses: {
           '200': {
-            description: 'Users were obtained',
+            description: 'Rides were obtained',
             content: {
               'application/json': {
                 schema: {
-                  $ref: '#/components/schemas/Users'
+                  $ref: '#/components/schemas/Rides'
                 }
               }
             }
           },
-          '400': {
-            description: 'Missing parameters',
+          '404': {
+            description: 'No rides found',
             content: {
               'application/json': {
                 schema: {
                   $ref: '#/components/schemas/Error'
                 },
                 example: {
-                  message: 'companyId is missing',
-                  internal_code: 'missing_parameters'
+                  error_code: 'RIDES_NOT_FOUND_ERROR',
+                  message: 'Could not find any rides',
+                }
+              }
+            }
+          },
+          '500': {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Error'
+                },
+                example: {
+                  error_code: 'SERVER_ERROR',
+                  message: 'Unknown error'
                 }
               }
             }
           }
         }
       },
-      post: {
-        tags: ['CRUD operations'],
-        description: 'Create users',
-        operationId: 'createUsers',
-        parameters: [],
-        requestBody: {
-          content: {
-            'application/json': {
-              schema: {
-                $ref: '#/components/schemas/Users'
-              }
-            }
-          },
-          required: true
-        },
-        responses: {
-          '200': {
-            description: 'New users were created'
-          },
-          '400': {
-            description: 'Invalid parameters',
-            content: {
-              'application/json' : {
-                schema: {
-                  $ref: '#/components/schemas/Error'
-                },
-                example: {
-                  message: 'User identificationNumbers 10, 20 already exist',
-                  internal_code: 'invalid_parameters'
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   components: {
     schemas: {
-      identificationNumber: {
+      rideID: {
         type: 'integer',
-        description: 'User identification number',
+        description: 'Ride identification number',
         example: 1234
       },
-      username: {
+      startLat: {
+        type: 'decimal',
+        description: 'Latitude of ride starting point',
+        example: -6.347617
+      },
+      startLong: {
+        type: 'decimal',
+        description: 'Longitude of ride starting point',
+        example: 106.826691
+      },
+      endLat: {
+        type: 'decimal',
+        description: 'Latitude of ride end point',
+        example: -6.193758
+      },
+      endLong: {
+        type: 'decimal',
+        description: 'Longitude of ride end point',
+        example: 106.801613
+      },
+      riderName: {
         type: 'string',
-        example: 'raparicio'
+        description: 'Name of passenger',
+        example: 'Benedita'
       },
-      userType: {
+      driverName: {
         type: 'string',
-        // enum: USER_TYPES,
-        // default: REGULAR
+        description: 'Name of driver',
+        example: 'Samuel'
       },
-      companyId: {
-        type: 'integer',
-        description: 'Company id where the user works',
-        example: 15
+      driverVehicle: {
+        type: 'string',
+        description: 'Vehicle brand',
+        example: 'Toyota Avanza'
       },
-      User: {
+      created: {
+        type: 'datetime',
+        description: 'Date and time when the ride is booked in UTC',
+        example: '2020-01-01T00:00:00Z'
+      },
+      Ride: {
         type: 'object',
         properties: {
-          identificationNumber: {
-            $ref: '#/components/schemas/identificationNumber'
+          rideID: {
+            $ref: '#/components/schemas/rideID'
           },
-          username: {
-            $ref: '#/components/schemas/username'
+          startLat: {
+            $ref: '#/components/schemas/startLat'
           },
-          userType: {
-            $ref: '#/components/schemas/userType'
+          startLong: {
+            $ref: '#/components/schemas/startLong'
           },
-          companyId: {
-            $ref: '#/components/schemas/companyId'
+          endLat: {
+            $ref: '#/components/schemas/endLat'
+          },
+          endLong: {
+            $ref: '#/components/schemas/endLong'
+          },
+          riderName: {
+            $ref: '#/components/schemas/riderName'
+          },
+          driverName: {
+            $ref: '#/components/schemas/driverName'
+          },
+          driverVehicle: {
+            $ref: '#/components/schemas/driverVehicle'
+          },
+          created: {
+            $ref: '#/components/schemas/created'
           }
         }
       },
-      Users: {
+      Rides: {
         type: 'object',
         properties: {
-          users: {
+          rides: {
             type: 'array',
             items: {
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Ride'
             }
           }
         }
@@ -186,10 +166,10 @@ const config = {
       Error: {
         type: 'object',
         properties: {
-          message: {
+          error_code: {
             type: 'string'
           },
-          internal_code: {
+          message: {
             type: 'string'
           }
         }
