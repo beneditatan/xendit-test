@@ -125,6 +125,62 @@ const config = {
           }
         }
       }
+    },
+    '/rides/:rideID': {
+      get: {
+        tags: ['CRUD operations'],
+        description: 'Get a specific ride given its rideID',
+        parameters: [
+          {
+            name: 'rideID',
+            in: 'path',
+            schema: {
+              $ref: '#/components/schemas/rideID',
+            },
+            required: true
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'Ride was obtained',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Ride'
+                }
+              }
+            }
+          },
+          '404': {
+            description: 'No rides found',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Error'
+                },
+                example: {
+                  error_code: 'RIDES_NOT_FOUND_ERROR',
+                  message: 'Could not find any rides',
+                }
+              }
+            }
+          },
+          '500': {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Error'
+                },
+                example: {
+                  error_code: 'SERVER_ERROR',
+                  message: 'Unknown error'
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   components: {
