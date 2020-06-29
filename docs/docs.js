@@ -181,6 +181,23 @@ const config = {
           }
         }
       }
+    },
+    '/health': {
+      get: {
+        tags: ['Health Check'],
+        description: 'Server health check',
+        parameters: [],
+        responses: {
+          '200': {
+            description: 'Server is healthy',
+            content: {
+              'text/plain': {
+                example: 'Healthy'
+              }
+            }
+          },
+        }
+      }
     }
   },
   components: {
