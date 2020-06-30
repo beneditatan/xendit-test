@@ -9,7 +9,9 @@ const jsonParser = bodyParser.json();
 const swaggerUi = require('swagger-ui-express');
 const openApiDocumentation = require('../docs/docs');
 
-module.exports = (db) => {
+const { Ride, RideManager } = require('./models');
+
+module.exports = (db, rm) => {
     app.get('/health', (req, res) => res.send('Healthy'));
 
     app.post('/rides', jsonParser, (req, res) => {
@@ -99,27 +101,37 @@ module.exports = (db) => {
         });
     });
 
-    app.get('/rides/:id', (req, res) => {
-        db.all(`SELECT * FROM Rides WHERE rideID='${req.params.id}'`, function (err, rows) {
-            if (err) {
-                res.status(500);
-                return res.send({
-                    error_code: 'SERVER_ERROR',
-                    message: 'Unknown error'
-                });
-            }
+    app.get('/rides/:rideID', async (req, res) => {
+        // db.all(`SELECT * FROM Rides WHERE rideID='${req.params.id}'`, function (err, rows) {
+        //     if (err) {
+        //         res.status(500);
+        //         return res.send({
+        //             error_code: 'SERVER_ERROR',
+        //             message: 'Unknown error'
+        //         });
+        //     }
 
-            if (rows.length === 0) {
-                res.status(404);
-                return res.send({
-                    error_code: 'RIDES_NOT_FOUND_ERROR',
-                    message: 'Could not find any rides'
-                });
-            }
+        //     if (rows.length === 0) {
+        //         res.status(404);
+        //         return res.send({
+        //             error_code: 'RIDES_NOT_FOUND_ERROR',
+        //             message: 'Could not find any rides'
+        //         });
+        //     }
 
+        //     res.status(200);
+        //     res.send(rows);
+        // });
+        const id = parseInt(req.params.rideID);
+        let obj;
+        try {
+            obj = await rm.getById(id);
             res.status(200);
-            res.send(rows);
-        });
+            res.send(obj);
+        } catch (err) {
+            console.log(err)
+        }
+
     });
 
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocumentation));

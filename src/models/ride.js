@@ -1,5 +1,7 @@
 'use strict';
 
+const { json } = require("body-parser");
+
 class Ride {
     constructor() {
         this.rideID = null;
@@ -30,6 +32,27 @@ class Ride {
         rideObj.setDriverVehicle(obj.driverVehicle);
 
         return rideObj;
+    }
+
+    toJSON() {
+        const obj = this;
+        let jsonObj = {};
+        if (obj.getRideID() !== null) {
+            jsonObj.rideID = obj.getRideID();  
+        }
+        if (obj.getRideID() != null) {
+            jsonObj.created = obj.getCreated();
+        }
+
+        jsonObj.startLat = obj.getStartLat();
+        jsonObj.startLong = obj.getStartLong();
+        jsonObj.endLat = obj.getEndLat();
+        jsonObj.endLong = obj.getEndLong();
+        jsonObj.riderName = obj.getRiderName();
+        jsonObj.driverName = obj.getDriverName();
+        jsonObj.driverVehicle = obj.getDriverVehicle();
+
+        return jsonObj;
     }
     
     getRideID() {

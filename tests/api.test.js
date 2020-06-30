@@ -8,9 +8,10 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(':memory:');
 const { DBUtil, ObjectNotFound } = require('../src/core');
 const { Ride, RideManager } = require('../src/models');
-
-const app = require('../src/app')(db);
+const rm = new RideManager(db);
+const app = require('../src/app')(db, rm);
 const buildSchemas = require('../src/schemas');
+const { stub } = require('sinon');
 
 describe('API tests', () => {
     before((done) => {
@@ -25,19 +26,19 @@ describe('API tests', () => {
         });
     });
 
-    afterEach((done) => {
-		db.serialize((err) => {
-			if (err) {
-				return done(err);
-			}
+    // afterEach((done) => {
+	// 	db.serialize((err) => {
+	// 		if (err) {
+	// 			return done(err);
+	// 		}
 
-			const dbUtil = new DBUtil(db);
-			const query = 'DELETE FROM Rides';
-			dbUtil.asyncDbRun(query, []);
+	// 		const dbUtil = new DBUtil(db);
+	// 		const query = 'DELETE FROM Rides';
+	// 		dbUtil.asyncDbRun(query, []);
 
-			done();
-		})
-    })
+	// 		done();
+	// 	})
+    // })
     
     const START_LAT = -6.347617;
 	const START_LONG = 106.826691;
@@ -71,20 +72,29 @@ describe('API tests', () => {
         });
     });
 
-    describe('GET /rides/:id', () => {
+    describe('GET /rides/:rideID', () => {
+        let sandbox;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+        })
+
+        afterEach(() => {
+            sandbox.restore();
+        })
+
         it('should return 200 when ID exists', async () => {
             // arrange
             const testID = 1;
-            const stubRideManager = sinon.createStubInstance(RideManager, {
-                getById: () => {}
-            });
+
             const expectedObj = getRideObject();
             expectedObj.setRideID(testID);
-            stubRideManager.getById.withArgs(testID).returns(expectedObj);
-            
+
+            const stubGetById = sandbox.stub(RideManager.prototype, 'getById');
+            stubGetById.withArgs(testID).resolves(expectedObj);
+
             // act
-            const res = await request(app)
-                .get(`/rides/${testID}`)
+            const res = await request(app).get(`/rides/${testID}`)
 
             // assert
             expect(res.statusCode).toEqual(200);
