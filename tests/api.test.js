@@ -6,7 +6,7 @@ const { assert, expect } = require("@sinonjs/referee");
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(':memory:');
-const { DBUtil, ObjectNotFound } = require('../src/core');
+const { DBUtil, ObjectNotFound, ErrorCode } = require('../src/core');
 const { Ride, RideManager } = require('../src/models');
 const rm = new RideManager(db);
 const app = require('../src/app')(db, rm);
@@ -111,12 +111,9 @@ describe('API tests', () => {
 
         it('should return 404 when ID does not exist', async () => {
             // arrange
-            const testID = 1;
-            const stubRideManager = sinon.createStubInstance(RideManager, {
-                getById: () => {}
-            });
-
-            stubRideManager.getById.withArgs(testID).throws(ObjectNotFound);
+            const testID = 2;
+            const stubGetById = sandbox.stub(RideManager.prototype, 'getById');
+            stubGetById.withArgs(testID).throws(new ObjectNotFound('Could not find any rides'));
 
             const res = await request(app)
                 .get(`/rides/${testID}`)

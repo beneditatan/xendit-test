@@ -129,7 +129,21 @@ module.exports = (db, rm) => {
             res.status(200);
             res.send(obj);
         } catch (err) {
-            console.log(err)
+            if (err.constructor.name === "ObjectNotFound") {
+                res.status(404);
+                res.send(
+                    {
+                        error_code: err.errorCode,
+                        message: 'Could not find any rides'
+                    }
+                )
+            } else {
+                res.status(500);
+                res.send({
+                    error_code: 'SERVER_ERROR',
+                    message: 'Unknown error'
+                });
+            }
         }
 
     });
