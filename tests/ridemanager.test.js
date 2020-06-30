@@ -6,9 +6,9 @@ const db = new sqlite3.Database(':memory:');
 const buildSchemas = require('../src/schemas');
 const assert = require('assert');
 
-const Ride = require('../src/models/ride');
+const { Ride, RideManager } = require('../src/models');
 
-describe('Ride DB model', () => {
+describe('RideManager test', () => {
     before((done) => {
         db.serialize((err) => { 
             if (err) {
@@ -28,21 +28,28 @@ describe('Ride DB model', () => {
 	const RIDER_NAME = 'Benedita';
 	const DRIVER_NAME = 'Samuel';
 	const DRIVER_VEHICLE = 'Toyota Avanza';
+
+	const getRideObject = () => {
+		const rideObj = new Ride();
+		rideObj.setStartLat(START_LAT);
+		rideObj.setStartLong(START_LONG);
+		rideObj.setEndLat(END_LAT);
+		rideObj.setEndLong(END_LONG);
+		rideObj.setRiderName(RIDER_NAME);
+		rideObj.setDriverName(DRIVER_NAME);
+		rideObj.setDriverVehicle(DRIVER_VEHICLE);
+		
+		return rideObj
+	}
 	
 	describe('#save()', () => {
 		it('should return object row when object is successfully written to db', async () => {
 			// arrange
-			const rideObj = new Ride(db);
-			rideObj.setStartLat(START_LAT);
-			rideObj.setStartLong(START_LONG);
-			rideObj.setEndLat(END_LAT);
-			rideObj.setEndLong(END_LONG);
-			rideObj.setRiderName(RIDER_NAME);
-			rideObj.setDriverName(DRIVER_NAME);
-			rideObj.setDriverVehicle(DRIVER_VEHICLE);
+			const rideObj = getRideObject();
+			const rm = new RideManager(db);
 
 			// act
-			const rows = await rideObj.save();
+			const rows = await rm.save(rideObj);
 
 			// assert	
 			assert.equal(rows.length, 1); 		// there should exactly be one row
