@@ -129,7 +129,7 @@ describe('RideManager test', () => {
 			// assert
 			assert.equal(resArray.length, noOfObj);
 			for (var i = 0; i < noOfObj; i++) {
-				assert.equal(resArray[i], expectedIDs[i]);
+				assert.equal(resArray[i].getRideID(), expectedIDs[i]);
 			}
 		})
 	})

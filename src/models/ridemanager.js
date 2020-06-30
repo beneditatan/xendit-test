@@ -54,6 +54,24 @@ class RideManager {
             return Ride.fromJSON(rows[0]);
         }
     }
+
+    async getAll() {
+        const query = `SELECT * FROM Rides`;
+        let rows;
+        try {
+            rows = await this.dbUtil.asyncDbAll(query);
+        } catch (error) {
+            throw error;
+        }
+
+        let objArr = []
+        for (var i = 0; i < rows.length; i++) {
+            const obj = Ride.fromJSON(rows[i]);
+            objArr.push(obj);
+        }
+
+        return objArr;
+    }
 }
 
 module.exports = RideManager;
