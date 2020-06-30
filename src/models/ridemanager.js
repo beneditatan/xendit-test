@@ -1,6 +1,6 @@
 'use strict';
 
-const { DBUtil } = require('../utils');
+const { DBUtil } = require('../core');
 const Ride = require('./ride');
 
 class RideManager {

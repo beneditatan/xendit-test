@@ -7,7 +7,7 @@ const buildSchemas = require('../src/schemas');
 const assert = require('assert');
 
 const { Ride, RideManager } = require('../src/models');
-const { DBUtil } = require('../src/utils');
+const { DBUtil } = require('../src/core');
 
 describe('RideManager test', () => {
     before((done) => {
