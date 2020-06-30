@@ -108,6 +108,29 @@ describe('RideManager test', () => {
 
 			// assert
 			await expect(rm.getById(expectedID)).to.be.rejectedWith(ObjectNotFound);
+		});
+	});
+	
+	describe("#getAll()", () => {
+		it('should return all rows in Ride table', async () => {
+			// arrange
+			const rm = new RideManager(db);
+			const noOfObj = 5;
+			let expectedIDs = [];
+
+			for (var i = 0; i < noOfObj; i++) {
+				const res = await rm.save(getRideObject());
+				expectedIDs.push(res.getRideID());
+			}
+
+			// act
+			const resArray = await rm.getAll();
+
+			// assert
+			assert.equal(resArray.length, noOfObj);
+			for (var i = 0; i < noOfObj; i++) {
+				assert.equal(resArray[i], expectedIDs[i]);
+			}
 		})
 	})
 });
