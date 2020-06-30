@@ -1,15 +1,27 @@
 'use strict';
 
 class Ride {
-    constructor(db) {
-        this.db = db;
+    constructor() {
         this.startLat = null;
-        this.startLonng = null;
+        this.startLong = null;
         this.endLat = null;
         this.endLong = null;
         this.riderName = null;
         this.driverName = null;
         this.driverVehicle = null;
+    }
+
+    static fromJSON(obj) {
+        const rideObj = new Ride();
+        rideObj.setStartLat(obj.startLat);
+        rideObj.setStartLong(obj.startLong);
+        rideObj.setEndLat(obj.endLat);
+        rideObj.setEndLong(obj.endLong);
+        rideObj.setRiderName(obj.riderName);
+        rideObj.setDriverName(obj.driverName);
+        rideObj.setDriverVehicle(obj.driverVehicle);
+
+        return rideObj;
     }
 
     getStartLat() {

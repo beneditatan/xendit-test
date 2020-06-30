@@ -85,8 +85,8 @@ describe('RideManager test', () => {
 			// arrange
 			const rm = new RideManager(db);
 			const expectedObj = getRideObject();
-			const expectedID = 1;
-			await rm.save(expectedObj);
+			const rows = await rm.save(expectedObj);
+			const expectedID = rows[0].rideID;
 
 			// act
 			const resObj = await rm.getById(expectedID);

@@ -1,6 +1,7 @@
 'use strict';
 
 const { DBUtil } = require('../utils');
+const Ride = require('./ride');
 
 class RideManager {
     constructor(db) {
@@ -34,6 +35,22 @@ class RideManager {
             return rows;
         } catch (error) {
             throw error;
+        }
+    }
+
+    async getById(id) {
+        const query = `SELECT * FROM Rides WHERE rideID = ${id}`;
+        let rows;
+        try {
+            rows = await this.dbUtil.asyncDbAll(query);
+        } catch (error) {
+            throw error;
+        }
+
+        if (rows.length === 0) {
+            throw Error("Object not found");
+        } else {
+            return Ride.fromJSON(rows[0]);
         }
     }
 }
