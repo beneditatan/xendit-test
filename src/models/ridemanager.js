@@ -33,7 +33,7 @@ class RideManager {
         try {
             const rows = await this.dbUtil.asyncDbAll(selectQuery);
             // TODO: check if rows length is 1
-            return rows;
+            return Ride.fromJSON(rows[0]);
         } catch (error) {
             throw error;
         }

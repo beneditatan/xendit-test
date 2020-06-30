@@ -2,6 +2,7 @@
 
 class Ride {
     constructor() {
+        this.rideID = null;
         this.startLat = null;
         this.startLong = null;
         this.endLat = null;
@@ -9,10 +10,17 @@ class Ride {
         this.riderName = null;
         this.driverName = null;
         this.driverVehicle = null;
+        this.created = null;
     }
 
     static fromJSON(obj) {
         const rideObj = new Ride();
+        if (obj.hasOwnProperty('rideID')) {
+            rideObj.setRideID(obj.rideID);
+        }
+        if (obj.hasOwnProperty('created')) {
+            rideObj.setCreated(obj.created);
+        }
         rideObj.setStartLat(obj.startLat);
         rideObj.setStartLong(obj.startLong);
         rideObj.setEndLat(obj.endLat);
@@ -22,6 +30,14 @@ class Ride {
         rideObj.setDriverVehicle(obj.driverVehicle);
 
         return rideObj;
+    }
+    
+    getRideID() {
+        return this.rideID;
+    }
+
+    setRideID(val) {
+        this.rideID = val;
     }
 
     getStartLat() {
@@ -78,6 +94,14 @@ class Ride {
 
     setDriverVehicle(val) {
         this.driverVehicle = val;
+    }
+
+    getCreated() {
+        return this.created;
+    }
+
+    setCreated(val) {
+        this.created = val;
     }
 }
 
