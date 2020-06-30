@@ -45,7 +45,8 @@ describe('API tests', () => {
 	const END_LONG = 106.801613;
 	const RIDER_NAME = 'Benedita';
 	const DRIVER_NAME = 'Samuel';
-	const DRIVER_VEHICLE = 'Toyota Avanza';
+    const DRIVER_VEHICLE = 'Toyota Avanza';
+    const CREATED = '2020-06-30 13:13:08';
 
 	const getRideObject = () => {
 		const rideObj = new Ride();
@@ -55,7 +56,8 @@ describe('API tests', () => {
 		rideObj.setEndLong(END_LONG);
 		rideObj.setRiderName(RIDER_NAME);
 		rideObj.setDriverName(DRIVER_NAME);
-		rideObj.setDriverVehicle(DRIVER_VEHICLE);
+        rideObj.setDriverVehicle(DRIVER_VEHICLE);
+        rideObj.setCreated(CREATED);
 		
 		return rideObj
 	}
@@ -78,14 +80,23 @@ describe('API tests', () => {
             });
             const expectedObj = getRideObject();
             expectedObj.setRideID(testID);
-            expectedObj.setCreated('2020-06-30 13:13:08');
             stubRideManager.getById.withArgs(testID).returns(expectedObj);
             
             // act
             const res = await request(app)
                 .get(`/rides/${testID}`)
 
+            // assert
             expect(res.statusCode).toEqual(200);
+            expect(res.body.rideID).toEqual(testID);
+            expect(res.body.startLat).toEqual(START_LAT);
+            expect(res.body.endLat).toEqual(END_LAT);
+            expect(res.body.endLong).toEqual(END_LONG);
+            expect(res.body.riderName).toEqual(RIDER_NAME);
+            expect(res.body.driverName).toEqual(DRIVER_NAME);
+            expect(res.body.driverVehicle).toEqual(DRIVER_VEHICLE);
+            expect(res.body.created).toEqual(CREATED);
+
         });
 
         it('should return 404 when ID does not exist', async () => {
