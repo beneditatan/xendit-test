@@ -5,6 +5,9 @@ const db = new sqlite3.Database(':memory:');
 
 const buildSchemas = require('../src/schemas');
 const assert = require('assert');
+const chai = require('chai');
+const expect = chai.expect;
+chai.use(require('chai-as-promised'));
 
 const { Ride, RideManager } = require('../src/models');
 const { DBUtil } = require('../src/core');
@@ -81,7 +84,7 @@ describe('RideManager test', () => {
 	});
 
 	describe('#getByID', () => {
-		it('should return Ride object given rideID', async () => {
+		it('should return Ride object given existing rideID', async () => {
 			// arrange
 			const rm = new RideManager(db);
 			const expectedObj = getRideObject();
@@ -99,6 +102,17 @@ describe('RideManager test', () => {
 			assert.equal(resObj.getRiderName(), RIDER_NAME);
 			assert.equal(resObj.getDriverName(), DRIVER_NAME);
 			assert.equal(resObj.getDriverVehicle(), DRIVER_VEHICLE);
+		});
+
+		it('should throw exception when ride is not found', async () => {
+			// arrange
+			const rm = new RideManager(db);
+			const expectedID = 1;
+			const error = new ObjectNotFound();
+
+			// assert
+			await expect(rm.getById(expectedID)).to.be.rejectedWith(error);
+			
 		})
 	})
 });

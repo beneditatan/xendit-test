@@ -48,7 +48,7 @@ class RideManager {
         }
 
         if (rows.length === 0) {
-            throw Error("Object not found");
+            throw new Error("Object not found");
         } else {
             return Ride.fromJSON(rows[0]);
         }
