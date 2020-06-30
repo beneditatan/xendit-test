@@ -10,7 +10,7 @@ const expect = chai.expect;
 chai.use(require('chai-as-promised'));
 
 const { Ride, RideManager } = require('../src/models');
-const { DBUtil } = require('../src/core');
+const { DBUtil, ObjectNotFound } = require('../src/core');
 
 describe('RideManager test', () => {
     before((done) => {
@@ -108,11 +108,9 @@ describe('RideManager test', () => {
 			// arrange
 			const rm = new RideManager(db);
 			const expectedID = 1;
-			const error = new ObjectNotFound();
 
 			// assert
-			await expect(rm.getById(expectedID)).to.be.rejectedWith(error);
-			
+			await expect(rm.getById(expectedID)).to.be.rejectedWith(ObjectNotFound);
 		})
 	})
 });

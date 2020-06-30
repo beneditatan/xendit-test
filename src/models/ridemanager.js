@@ -1,6 +1,6 @@
 'use strict';
 
-const { DBUtil } = require('../core');
+const { DBUtil, ObjectNotFound } = require('../core');
 const Ride = require('./ride');
 
 class RideManager {
@@ -48,7 +48,7 @@ class RideManager {
         }
 
         if (rows.length === 0) {
-            throw new Error("Object not found");
+            throw new ObjectNotFound("Ride with given ID is not found");
         } else {
             return Ride.fromJSON(rows[0]);
         }
