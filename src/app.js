@@ -10,6 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const openApiDocumentation = require('../docs/docs');
 
 const { Ride, RideManager } = require('./models');
+const { ErrorCode } = require('./core');
 
 module.exports = (db, rm) => {
     app.get('/health', (req, res) => res.send('Healthy'));
@@ -121,7 +122,7 @@ module.exports = (db, rm) => {
             } else {
                 res.status(500);
                 res.send({
-                    error_code: 'SERVER_ERROR',
+                    error_code: ErrorCode.SERVER_ERROR,
                     message: 'Unknown error'
                 });
             }
