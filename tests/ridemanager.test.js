@@ -7,6 +7,7 @@ const buildSchemas = require('../src/schemas');
 const assert = require('assert');
 
 const { Ride, RideManager } = require('../src/models');
+const { DBUtil } = require('../src/utils');
 
 describe('RideManager test', () => {
     before((done) => {
@@ -20,6 +21,20 @@ describe('RideManager test', () => {
             done();
         });
 	});
+
+	afterEach((done) => {
+		db.serialize((err) => {
+			if (err) {
+				return done(err);
+			}
+
+			const dbUtil = new DBUtil(db);
+			const query = 'DELETE FROM Rides';
+			dbUtil.asyncDbRun(query, []);
+
+			done();
+		})
+	})
 
 	const START_LAT = -6.347617;
 	const START_LONG = 106.826691;
@@ -64,4 +79,26 @@ describe('RideManager test', () => {
 			assert.equal(resObj.driverVehicle, DRIVER_VEHICLE);
 		});
 	});
+
+	describe('#getByID', () => {
+		it('should return Ride object given rideID', async () => {
+			// arrange
+			const rm = new RideManager(db);
+			const expectedObj = getRideObject();
+			const expectedID = 1;
+			await rm.save(expectedObj);
+
+			// act
+			const resObj = await rm.getById(expectedID);
+
+			// assert
+			assert.equal(resObj.getStartLat(), START_LAT);
+			assert.equal(resObj.getStartLong(), START_LONG);
+			assert.equal(resObj.getEndLat(), END_LAT);
+			assert.equal(resObj.getEndLong(), END_LONG);
+			assert.equal(resObj.getRiderName(), RIDER_NAME);
+			assert.equal(resObj.getDriverName(), DRIVER_NAME);
+			assert.equal(resObj.getDriverVehicle(), DRIVER_VEHICLE);
+		})
+	})
 });
