@@ -32,6 +32,7 @@ class RideManager {
         const selectQuery = `SELECT * FROM Rides WHERE rideID = ${res.lastID}`;
         try {
             const rows = await this.dbUtil.asyncDbAll(selectQuery);
+            // TODO: check if rows length is 1
             return rows;
         } catch (error) {
             throw error;

@@ -67,19 +67,16 @@ describe('RideManager test', () => {
 			const rm = new RideManager(db);
 
 			// act
-			const rows = await rm.save(rideObj);
+			const resObj = await rm.save(rideObj);
 
-			// assert	
-			assert.equal(rows.length, 1); 		// there should exactly be one row
-
-			const resObj = rows[0];
-			assert.equal(resObj.startLat, START_LAT);
-			assert.equal(resObj.startLong, START_LONG);
-			assert.equal(resObj.endLat, END_LAT);
-			assert.equal(resObj.endLong, END_LONG);
-			assert.equal(resObj.riderName, RIDER_NAME);
-			assert.equal(resObj.driverName, DRIVER_NAME);
-			assert.equal(resObj.driverVehicle, DRIVER_VEHICLE);
+			// assert
+			assert.equal(resObj.getStartLat(), START_LAT);
+			assert.equal(resObj.getStartLong(), START_LONG);
+			assert.equal(resObj.getEndLat(), END_LAT);
+			assert.equal(resObj.getEndLong(), END_LONG);
+			assert.equal(resObj.getRiderName(), RIDER_NAME);
+			assert.equal(resObj.getDriverName(), DRIVER_NAME);
+			assert.equal(resObj.getDriverVehicle(), DRIVER_VEHICLE);
 		});
 	});
 
