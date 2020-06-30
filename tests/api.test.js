@@ -25,20 +25,6 @@ describe('API tests', () => {
             done();
         });
     });
-
-    // afterEach((done) => {
-	// 	db.serialize((err) => {
-	// 		if (err) {
-	// 			return done(err);
-	// 		}
-
-	// 		const dbUtil = new DBUtil(db);
-	// 		const query = 'DELETE FROM Rides';
-	// 		dbUtil.asyncDbRun(query, []);
-
-	// 		done();
-	// 	})
-    // })
     
     const START_LAT = -6.347617;
 	const START_LONG = 106.826691;
