@@ -129,6 +129,7 @@ module.exports = (db, rm) => {
             res.status(200);
             res.send(obj);
         } catch (err) {
+            console.log(err);
             if (err.constructor.name === "ObjectNotFound") {
                 res.status(404);
                 res.send(
