@@ -112,11 +112,16 @@ describe('RideManager test', () => {
 	});
 	
 	describe("#getAll()", () => {
-		it('should return all rows in Ride table', async () => {
+		it('should return the nth number of rows specified in limit and offset', async () => {
 			// arrange
 			const rm = new RideManager(db);
-			const noOfObj = 5;
+			const noOfObj = 11;
 			let expectedIDs = [];
+			const pagination = {
+				limit: 5,
+				offset: 3
+			}
+			
 
 			for (var i = 0; i < noOfObj; i++) {
 				const res = await rm.save(getRideObject());
@@ -124,12 +129,12 @@ describe('RideManager test', () => {
 			}
 
 			// act
-			const resArray = await rm.getAll();
+			const resArray = await rm.getAll(pagination);
 
 			// assert
-			assert.equal(resArray.length, noOfObj);
-			for (var i = 0; i < noOfObj; i++) {
-				assert.equal(resArray[i].getRideID(), expectedIDs[i]);
+			assert.equal(resArray.length, pagination.limit);
+			for (var i = 0; i < pagination.limit; i++) {
+				assert.equal(resArray[i].getRideID(), expectedIDs[i+offset]);
 			}
 		})
 	})
