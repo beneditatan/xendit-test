@@ -41,6 +41,7 @@ module.exports = (db, rm) => {
         }
 
         if (typeof riderName !== 'string' || riderName.length < 1) {
+            res.status(400);
             return res.send({
                 error_code: 'VALIDATION_ERROR',
                 message: 'Rider name must be a non empty string'
