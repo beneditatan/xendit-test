@@ -131,6 +131,7 @@ describe('RideManager test', () => {
 
 			// assert
 			assert.equal(resArray.length, pagination.limit);
+			assert.equal(count, noOfObj);
 			for (var i = 0; i < pagination.limit; i++) {
 				assert.equal(resArray[i].getRideID(), expectedIDs[i + pagination.offset]);
 			}

@@ -67,13 +67,32 @@ class RideManager {
             throw error;
         }
 
-        let objArr = []
+        let resArray = []
         for (var i = 0; i < rows.length; i++) {
             const obj = Ride.fromJSON(rows[i]);
-            objArr.push(obj);
+            resArray.push(obj);
         }
 
-        return objArr;
+        let count;
+        try {
+            count = await this.getCount();
+        } catch (error) {
+            throw error;
+        }
+
+        return { resArray, count };
+    }
+
+    async getCount() {
+        const query = `SELECT COUNT(*) AS rows FROM Rides`;
+        let rows;
+        try {
+            rows = await this.dbUtil.asyncDbAll(query);
+        } catch (error) {
+            throw error;
+        }
+
+        return rows[0].rows;
     }
 }
 
