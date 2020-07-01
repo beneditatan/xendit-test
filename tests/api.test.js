@@ -172,4 +172,47 @@ describe('API tests', () => {
             expect(res.body.error_code).toEqual(ErrorCode.RIDES_NOT_FOUND_ERROR);
         })
     });
+
+    describe('POST /rides', () => {
+        let sandbox;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('should return 200 given valid input', async () => {
+            // arrange
+            const testID = 1;
+            const expectedObj = getRideObject();
+            expectedObj.setRideID(testID);
+            const reqObj = getRideObject();
+            reqObj.setCreated(null);
+            const reqBody = reqObj.toJSON();
+
+            const stubSave = sandbox.stub(RideManager.prototype, 'save');
+            stubSave.withArgs(reqBody).resolves(expectedObj);
+
+            // act
+            const res = await request(app)
+                                .post('/rides')
+                                .send(reqBody);
+
+            // assert
+            expect(res.statusCode).toEqual(200);
+            expect(res.body.rideID).toEqual(testID);
+            expect(res.body.startLat).toEqual(START_LAT);
+            expect(res.body.startLong).toEqual(START_LONG);
+            expect(res.body.endLat).toEqual(END_LAT);
+            expect(res.body.endLong).toEqual(END_LONG);
+            expect(res.body.riderName).toEqual(RIDER_NAME);
+            expect(res.body.driverName).toEqual(DRIVER_NAME);
+            expect(res.body.driverVehicle).toEqual(DRIVER_VEHICLE);
+            expect(res.body.created).toEqual(CREATED);
+        });
+
+    });
 });
