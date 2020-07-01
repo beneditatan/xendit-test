@@ -82,24 +82,32 @@ module.exports = (db, rm) => {
         });
     });
 
-    app.get('/rides', (req, res) => {
-        db.all('SELECT * FROM Rides', function (err, rows) {
-            if (err) {
-                return res.send({
-                    error_code: 'SERVER_ERROR',
-                    message: 'Unknown error'
-                });
-            }
+    app.get('/rides', async (req, res) => {
+        // db.all('SELECT * FROM Rides', function (err, rows) {
+        //     if (err) {
+        //         return res.send({
+        //             error_code: 'SERVER_ERROR',
+        //             message: 'Unknown error'
+        //         });
+        //     }
 
-            if (rows.length === 0) {
-                return res.send({
-                    error_code: 'RIDES_NOT_FOUND_ERROR',
-                    message: 'Could not find any rides'
-                });
-            }
+        //     if (rows.length === 0) {
+        //         return res.send({
+        //             error_code: 'RIDES_NOT_FOUND_ERROR',
+        //             message: 'Could not find any rides'
+        //         });
+        //     }
 
-            res.send(rows);
-        });
+        //     res.send(rows);
+        // });
+        let obj;
+        try {
+            obj = await rm.getAll();
+            res.status(200);
+            res.send(obj);
+        } catch (error) {
+            console.log(error);
+        }
     });
 
     app.get('/rides/:rideID', async (req, res) => {
@@ -110,7 +118,7 @@ module.exports = (db, rm) => {
             res.status(200);
             res.send(obj);
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             if (err.constructor.name === "ObjectNotFound") {
                 res.status(404);
                 res.send(
