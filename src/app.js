@@ -103,10 +103,25 @@ module.exports = (db, rm) => {
         let obj;
         try {
             obj = await rm.getAll();
+        } catch (error) {
+            res.status(500);
+            res.send({
+                error_code: ErrorCode.SERVER_ERROR,
+                message: 'Unknown error'
+            });
+        }
+
+        if (obj.length > 0) {
             res.status(200);
             res.send(obj);
-        } catch (error) {
-            console.log(error);
+        } else {
+            res.status(404);
+            res.send(
+                {
+                    error_code: ErrorCode.RIDES_NOT_FOUND_ERROR,
+                    message: 'Could not find any rides'
+                }
+            )
         }
     });
 

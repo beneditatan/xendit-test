@@ -165,8 +165,7 @@ describe('API tests', () => {
             stubGetAll.resolves([]);
 
             // act
-            const res = request(app).get('/rides');
-            console.log(res);
+            const res = await request(app).get('/rides');
 
             // assert
             expect(res.statusCode).toEqual(404);
