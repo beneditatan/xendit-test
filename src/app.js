@@ -9,7 +9,6 @@ const jsonParser = bodyParser.json();
 const swaggerUi = require('swagger-ui-express');
 const openApiDocumentation = require('../docs/docs');
 
-const { Ride, RideManager } = require('./models');
 const { ErrorCode } = require('./core');
 const APIValidator = require('./api/validator');
 
