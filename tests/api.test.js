@@ -140,7 +140,7 @@ describe('API tests', () => {
             }
 
             const stubGetAll = sandbox.stub(RideManager.prototype, 'getAll');
-            stubGetAll.withArgs({ offset, limit }).resolves(expObjArray);
+            stubGetAll.withArgs({ offset, limit }).resolves({ resArray: expObjArray, count: noOfObj});
 
             // act
             const res = await request(app)
@@ -150,6 +150,10 @@ describe('API tests', () => {
             // assert
             expect(res.statusCode).toEqual(200);
             expect(res.body.rows.length).toEqual(limit);
+            expect(res.body.meta.count).toEqual(noOfObj);
+            expect(res.body.meta.currentPage).toEqual(reqBody.currentPage);
+            expect(res.body.meta.pageSize).toEqual(reqBody.pageSize);
+            expect(res.body.meta.pageCount).toEqual(Math.ceil(noOfObj/reqBody.pageSize));
 
             for (var i = 0; i < limit; i++) {
                 const resObj = res.body.rows[i];
@@ -170,11 +174,19 @@ describe('API tests', () => {
 
         it('should return 404 when no ride is found', async () => {
             // arrange
+            const reqBody = {
+                currentPage: 2,
+                pageSize: 5
+            }
+
+            const offset = (reqBody.currentPage - 1) * reqBody.pageSize;
+            const limit = reqBody.pageSize;
+        
             const stubGetAll = sandbox.stub(RideManager.prototype, 'getAll');
-            stubGetAll.resolves([]);
+            stubGetAll.withArgs({ offset, limit }).resolves({ resArray: [], count: 0});
 
             // act
-            const res = await request(app).get('/rides');
+            const res = await request(app).get('/rides').send(reqBody);
 
             // assert
             expect(res.statusCode).toEqual(404);

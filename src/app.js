@@ -55,9 +55,9 @@ module.exports = (db, rm) => {
         const { currentPage, pageSize } = req.body;
         const { limit, offset } = calculateLimitAndOffset(currentPage, pageSize);
         
-        let obj;
+        let rowsData;
         try {
-            obj = await rm.getAll({ limit, offset });
+            rowsData = await rm.getAll({ limit, offset });
         } catch (error) {
             res.status(500);
             res.send({
@@ -66,9 +66,10 @@ module.exports = (db, rm) => {
             });
         }
 
+        const obj = rowsData.resArray;
+        const count = rowsData.count;
         if (obj.length > 0) {
-            const meta = paginate(currentPage, 70, obj, pageSize);
-            console.log(meta);
+            const meta = paginate(currentPage, count, obj, pageSize);
             res.status(200);
             res.send({ rows: obj, meta });
         } else {
