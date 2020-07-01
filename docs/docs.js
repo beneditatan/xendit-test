@@ -29,13 +29,23 @@ const config = {
         tags: ['CRUD operations'],
         description: 'Get all rides',
         parameters: [],
+        requestBody: {
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/RidesGetRequest'
+              }
+            }
+          },
+          required: true
+        },
         responses: {
           '200': {
             description: 'Rides were obtained',
             content: {
               'application/json': {
                 schema: {
-                  $ref: '#/components/schemas/Rides'
+                  $ref: '#/components/schemas/RidesGetResponse'
                 }
               }
             }
@@ -314,6 +324,57 @@ const config = {
           driverVehicle: {
             $ref: '#/components/schemas/driverVehicle'
           },
+        }
+      },
+      RidesGetRequest: {
+        type: 'object',
+        properties: {
+          currentPage: {
+            type: 'integer',
+            description: 'The page number of the requested page',
+            example: 2
+          },
+          pageSize: {
+            type: 'integer',
+            description: 'Number of entries in a page',
+            example: 5
+          }
+        }
+      },
+      RidesGetResponse: {
+        type: 'object',
+        properties: {
+          rows: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/Ride'
+            }
+          },
+          meta: {
+            type: 'object',
+            properties: {
+              currentPage: {
+                type: 'integer',
+                description: 'The page number of the current page',
+                example: 2
+              },
+              count: {
+                type: 'integer',
+                description: 'Total number of rows available to be queried',
+                example: 500
+              },
+              pageSize: {
+                type: 'integer',
+                description: 'Number of entries in a page',
+                example: 5
+              },
+              pageCount: {
+                type: 'integer',
+                description: 'Total number of pages',
+                example: 10
+              }
+            }
+          }
         }
       },
       Error: {
