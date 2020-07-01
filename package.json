@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "mocha tests",
+    "test:load": "artillery run ./tests/load_test.yml -o ./tests/log.json",
     "start": "nodemon index.js"
   },
   "keywords": [
