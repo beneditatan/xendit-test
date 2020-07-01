@@ -159,13 +159,14 @@ describe('API tests', () => {
 
         });
 
-        it('should retur 404 when no ride is found', async () => {
+        it('should return 404 when no ride is found', async () => {
             // arrange
             const stubGetAll = sandbox.stub(RideManager.prototype, 'getAll');
-            stubGetAll.throws(new ObjectNotFound());
+            stubGetAll.resolves([]);
 
             // act
             const res = request(app).get('/rides');
+            console.log(res);
 
             // assert
             expect(res.statusCode).toEqual(404);
