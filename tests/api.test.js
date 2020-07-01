@@ -159,6 +159,17 @@ describe('API tests', () => {
 
         });
 
+        it('should retur 404 when no ride is found', async () => {
+            // arrange
+            const stubGetAll = sandbox.stub(RideManager.prototype, 'getAll');
+            stubGetAll.throws(new ObjectNotFound());
 
+            // act
+            const res = request(app).get('/rides');
+
+            // assert
+            expect(res.statusCode).toEqual(404);
+            expect(res.body.error_code).toEqual(ErrorCode.RIDES_NOT_FOUND_ERROR);
+        })
     });
 });
