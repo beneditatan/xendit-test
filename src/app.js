@@ -9,6 +9,8 @@ const jsonParser = bodyParser.json();
 const swaggerUi = require('swagger-ui-express');
 const openApiDocumentation = require('../docs/docs');
 
+const { calculateLimitAndOffset, paginate } = require('paginate-info');
+
 const { ErrorCode } = require('./core');
 const APIValidator = require('./api/validator');
 
@@ -49,10 +51,13 @@ module.exports = (db, rm) => {
         }
     });
 
-    app.get('/rides', async (req, res) => {
+    app.get('/rides', jsonParser, async (req, res) => {
+        const { currentPage, pageSize } = req.body;
+        const { limit, offset } = calculateLimitAndOffset(currentPage, pageSize);
+        
         let obj;
         try {
-            obj = await rm.getAll();
+            obj = await rm.getAll({ limit, offset });
         } catch (error) {
             res.status(500);
             res.send({
@@ -62,8 +67,10 @@ module.exports = (db, rm) => {
         }
 
         if (obj.length > 0) {
+            const meta = paginate(currentPage, 70, obj, pageSize);
+            console.log(meta);
             res.status(200);
-            res.send(obj);
+            res.send({ rows: obj, meta });
         } else {
             res.status(404);
             res.send(

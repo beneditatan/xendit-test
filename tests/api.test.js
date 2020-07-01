@@ -149,10 +149,10 @@ describe('API tests', () => {
 
             // assert
             expect(res.statusCode).toEqual(200);
-            expect(res.body.length).toEqual(limit);
+            expect(res.body.rows.length).toEqual(limit);
 
-            for (var i = 0; i < noOfObj; i++) {
-                const resObj = res.body[i];
+            for (var i = 0; i < limit; i++) {
+                const resObj = res.body.rows[i];
                 const expObj = expObjArray[i];
 
                 expect(resObj.rideID).toEqual(expObj.rideID);
