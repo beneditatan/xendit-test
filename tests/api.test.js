@@ -86,6 +86,7 @@ describe('API tests', () => {
             expect(res.statusCode).toEqual(200);
             expect(res.body.rideID).toEqual(testID);
             expect(res.body.startLat).toEqual(START_LAT);
+            expect(res.body.startLong).toEqual(START_LONG);
             expect(res.body.endLat).toEqual(END_LAT);
             expect(res.body.endLong).toEqual(END_LONG);
             expect(res.body.riderName).toEqual(RIDER_NAME);
@@ -107,5 +108,57 @@ describe('API tests', () => {
             expect(res.statusCode).toEqual(404);
             expect(res.body.error_code).toEqual(ErrorCode.RIDES_NOT_FOUND_ERROR);
         })
-    })
+    });
+
+    describe('GET /rides', () => {
+        let sandbox;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('should return 200 when any ride is found in db', async () => {
+            // arrange
+            let expObjArray = [];
+            const noOfObj = 5;
+
+            for (var i = 0; i < noOfObj; i++) {
+                const obj = getRideObject();
+                obj.setRideID(i+1);
+                expObjArray.push(obj.toJSON());
+            }
+
+            const stubGetAll = sandbox.stub(RideManager.prototype, 'getAll');
+            stubGetAll.resolves(expObjArray);
+
+            // act
+            const res = await request(app).get('/rides');
+
+            // assert
+            expect(res.statusCode).toEqual(200);
+            expect(res.body.length).toEqual(noOfObj);
+
+            for (var i = 0; i < noOfObj; i++) {
+                const resObj = res.body[i];
+                const expObj = expObjArray[i];
+
+                expect(resObj.rideID).toEqual(expObj.rideID);
+                expect(resObj.startLat).toEqual(expObj.startLat);
+                expect(resObj.startLong).toEqual(expObj.startLong);
+                expect(resObj.endLat).toEqual(expObj.endLat);
+                expect(resObj.endLong).toEqual(expObj.endLong);
+                expect(resObj.riderName).toEqual(expObj.riderName);
+                expect(resObj.driverName).toEqual(expObj.driverName);
+                expect(resObj.driverVehicle).toEqual(expObj.driverVehicle);
+                expect(resObj.created).toEqual(expObj.created);
+            }
+
+        });
+
+
+    });
 });
