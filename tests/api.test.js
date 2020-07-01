@@ -246,5 +246,21 @@ describe('API tests', () => {
             expect(res.body.message).toEqual('End latitude and longitude must be between -90 - 90 and -180 to 180 degrees respectively');
         });
 
+        it('should return 400 given invalid riderName', async () => {
+            // arrange
+            const invalidObj = getRideObject();
+            invalidObj.setRiderName(null);
+
+            // act
+            const res = await request(app)
+                                .post('/rides')
+                                .send(invalidObj.toJSON())
+
+            // assert
+            expect(res.statusCode).toEqual(400)
+            expect(res.body.error_code).toEqual(ErrorCode.VALIDATION_ERROR);
+            expect(res.body.message).toEqual('Rider name must be a non empty string');
+        });
+
     });
 });
