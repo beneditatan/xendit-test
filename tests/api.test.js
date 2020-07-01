@@ -278,5 +278,21 @@ describe('API tests', () => {
             expect(res.body.message).toEqual('Driver name must be a non empty string');
         });
 
+        it('should return 400 given invalid driverVehicle', async () => {
+            // arrange
+            const invalidObj = getRideObject();
+            invalidObj.setDriverVehicle(null);
+
+            // act
+            const res = await request(app)
+                                .post('/rides')
+                                .send(invalidObj.toJSON())
+
+            // assert
+            expect(res.statusCode).toEqual(400)
+            expect(res.body.error_code).toEqual(ErrorCode.VALIDATION_ERROR);
+            expect(res.body.message).toEqual('Driver vehicle name must be a non empty string');
+        });
+
     });
 });
