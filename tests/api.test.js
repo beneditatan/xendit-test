@@ -14,6 +14,18 @@ const buildSchemas = require('../src/schemas');
 
 
 describe('API tests', () => {
+    before((done) => {
+        db.serialize((err) => { 
+            if (err) {
+                return done(err);
+            }
+
+            buildSchemas(db);
+            done();
+		});
+		
+    });
+    
     const START_LAT = -6.347617;
 	const START_LONG = 106.826691;
 	const END_LAT = -6.193758;
@@ -111,24 +123,33 @@ describe('API tests', () => {
 
         it('should return 200 when any ride is found in db', async () => {
             // arrange
-            let expObjArray = [];
-            const noOfObj = 5;
+            const reqBody = {
+                currentPage: 2,
+                pageSize: 5
+            }
 
-            for (var i = 0; i < noOfObj; i++) {
+            const offset = (reqBody.currentPage - 1) * reqBody.pageSize;
+            const limit = reqBody.pageSize;
+            let expObjArray = [];
+            const noOfObj = 11;
+
+            for (var i = 0; i < limit; i++) {
                 const obj = getRideObject();
-                obj.setRideID(i+1);
+                obj.setRideID(i + offset);
                 expObjArray.push(obj.toJSON());
             }
 
             const stubGetAll = sandbox.stub(RideManager.prototype, 'getAll');
-            stubGetAll.resolves(expObjArray);
+            stubGetAll.withArgs({ offset, limit }).resolves(expObjArray);
 
             // act
-            const res = await request(app).get('/rides');
+            const res = await request(app)
+                                .get('/rides')
+                                .send(reqBody);
 
             // assert
             expect(res.statusCode).toEqual(200);
-            expect(res.body.length).toEqual(noOfObj);
+            expect(res.body.length).toEqual(limit);
 
             for (var i = 0; i < noOfObj; i++) {
                 const resObj = res.body[i];

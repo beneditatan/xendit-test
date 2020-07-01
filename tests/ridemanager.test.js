@@ -13,6 +13,7 @@ const { Ride, RideManager } = require('../src/models');
 const { DBUtil, ObjectNotFound } = require('../src/core');
 
 describe('RideManager test', () => {
+	let rm;
     before((done) => {
         db.serialize((err) => { 
             if (err) {
@@ -20,9 +21,10 @@ describe('RideManager test', () => {
             }
 
             buildSchemas(db);
-
+			rm = new RideManager(db);
             done();
-        });
+		});
+		
 	});
 
 	afterEach((done) => {
@@ -64,7 +66,6 @@ describe('RideManager test', () => {
 		it('should return object row when object is successfully written to db', async () => {
 			// arrange
 			const rideObj = getRideObject();
-			const rm = new RideManager(db);
 
 			// act
 			const resObj = await rm.save(rideObj);
@@ -83,7 +84,6 @@ describe('RideManager test', () => {
 	describe('#getByID', () => {
 		it('should return Ride object given existing rideID', async () => {
 			// arrange
-			const rm = new RideManager(db);
 			const expectedObj = getRideObject();
 			const savedObj = await rm.save(expectedObj);
 			const expectedID = savedObj.getRideID();
@@ -103,7 +103,6 @@ describe('RideManager test', () => {
 
 		it('should throw exception when ride is not found', async () => {
 			// arrange
-			const rm = new RideManager(db);
 			const expectedID = 1;
 
 			// assert
@@ -114,7 +113,6 @@ describe('RideManager test', () => {
 	describe("#getAll()", () => {
 		it('should return the nth number of rows specified in limit and offset', async () => {
 			// arrange
-			const rm = new RideManager(db);
 			const noOfObj = 11;
 			let expectedIDs = [];
 			const pagination = {
