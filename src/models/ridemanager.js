@@ -55,8 +55,11 @@ class RideManager {
         }
     }
 
-    async getAll() {
-        const query = `SELECT * FROM Rides`;
+    async getAll(pagination) {
+        const { limit, offset } = pagination;
+
+        const query = `SELECT * FROM Rides ORDER BY rideID ASC 
+                        LIMIT ${limit} OFFSET ${offset}`;
         let rows;
         try {
             rows = await this.dbUtil.asyncDbAll(query);
