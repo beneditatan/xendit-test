@@ -127,7 +127,7 @@ describe('RideManager test', () => {
 			}
 
 			// act
-			const resArray = await rm.getAll(pagination);
+			const { resArray, count } = await rm.getAll(pagination);
 
 			// assert
 			assert.equal(resArray.length, pagination.limit);
