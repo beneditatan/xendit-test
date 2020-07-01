@@ -13,6 +13,7 @@ const { Ride, RideManager } = require('../src/models');
 const { DBUtil, ObjectNotFound } = require('../src/core');
 
 describe('RideManager test', () => {
+	let rm;
     before((done) => {
         db.serialize((err) => { 
             if (err) {
@@ -20,9 +21,10 @@ describe('RideManager test', () => {
             }
 
             buildSchemas(db);
-
+			rm = new RideManager(db);
             done();
-        });
+		});
+		
 	});
 
 	afterEach((done) => {
@@ -64,7 +66,6 @@ describe('RideManager test', () => {
 		it('should return object row when object is successfully written to db', async () => {
 			// arrange
 			const rideObj = getRideObject();
-			const rm = new RideManager(db);
 
 			// act
 			const resObj = await rm.save(rideObj);
@@ -83,7 +84,6 @@ describe('RideManager test', () => {
 	describe('#getByID', () => {
 		it('should return Ride object given existing rideID', async () => {
 			// arrange
-			const rm = new RideManager(db);
 			const expectedObj = getRideObject();
 			const savedObj = await rm.save(expectedObj);
 			const expectedID = savedObj.getRideID();
@@ -103,7 +103,6 @@ describe('RideManager test', () => {
 
 		it('should throw exception when ride is not found', async () => {
 			// arrange
-			const rm = new RideManager(db);
 			const expectedID = 1;
 
 			// assert
@@ -112,11 +111,15 @@ describe('RideManager test', () => {
 	});
 	
 	describe("#getAll()", () => {
-		it('should return all rows in Ride table', async () => {
+		it('should return the nth number of rows specified in limit and offset', async () => {
 			// arrange
-			const rm = new RideManager(db);
-			const noOfObj = 5;
+			const noOfObj = 11;
 			let expectedIDs = [];
+			const pagination = {
+				limit: 5,
+				offset: 3
+			}
+			
 
 			for (var i = 0; i < noOfObj; i++) {
 				const res = await rm.save(getRideObject());
@@ -124,12 +127,13 @@ describe('RideManager test', () => {
 			}
 
 			// act
-			const resArray = await rm.getAll();
+			const { resArray, count } = await rm.getAll(pagination);
 
 			// assert
-			assert.equal(resArray.length, noOfObj);
-			for (var i = 0; i < noOfObj; i++) {
-				assert.equal(resArray[i].getRideID(), expectedIDs[i]);
+			assert.equal(resArray.length, pagination.limit);
+			assert.equal(count, noOfObj);
+			for (var i = 0; i < pagination.limit; i++) {
+				assert.equal(resArray[i].getRideID(), expectedIDs[i + pagination.offset]);
 			}
 		})
 	})

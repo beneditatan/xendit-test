@@ -14,6 +14,18 @@ const buildSchemas = require('../src/schemas');
 
 
 describe('API tests', () => {
+    before((done) => {
+        db.serialize((err) => { 
+            if (err) {
+                return done(err);
+            }
+
+            buildSchemas(db);
+            done();
+		});
+		
+    });
+    
     const START_LAT = -6.347617;
 	const START_LONG = 106.826691;
 	const END_LAT = -6.193758;
@@ -111,27 +123,40 @@ describe('API tests', () => {
 
         it('should return 200 when any ride is found in db', async () => {
             // arrange
-            let expObjArray = [];
-            const noOfObj = 5;
+            const reqBody = {
+                currentPage: 2,
+                pageSize: 5
+            }
 
-            for (var i = 0; i < noOfObj; i++) {
+            const offset = (reqBody.currentPage - 1) * reqBody.pageSize;
+            const limit = reqBody.pageSize;
+            let expObjArray = [];
+            const noOfObj = 11;
+
+            for (var i = 0; i < limit; i++) {
                 const obj = getRideObject();
-                obj.setRideID(i+1);
+                obj.setRideID(i + offset);
                 expObjArray.push(obj.toJSON());
             }
 
             const stubGetAll = sandbox.stub(RideManager.prototype, 'getAll');
-            stubGetAll.resolves(expObjArray);
+            stubGetAll.withArgs({ offset, limit }).resolves({ resArray: expObjArray, count: noOfObj});
 
             // act
-            const res = await request(app).get('/rides');
+            const res = await request(app)
+                                .get('/rides')
+                                .send(reqBody);
 
             // assert
             expect(res.statusCode).toEqual(200);
-            expect(res.body.length).toEqual(noOfObj);
+            expect(res.body.rows.length).toEqual(limit);
+            expect(res.body.meta.count).toEqual(noOfObj);
+            expect(res.body.meta.currentPage).toEqual(reqBody.currentPage);
+            expect(res.body.meta.pageSize).toEqual(reqBody.pageSize);
+            expect(res.body.meta.pageCount).toEqual(Math.ceil(noOfObj/reqBody.pageSize));
 
-            for (var i = 0; i < noOfObj; i++) {
-                const resObj = res.body[i];
+            for (var i = 0; i < limit; i++) {
+                const resObj = res.body.rows[i];
                 const expObj = expObjArray[i];
 
                 expect(resObj.rideID).toEqual(expObj.rideID);
@@ -149,11 +174,19 @@ describe('API tests', () => {
 
         it('should return 404 when no ride is found', async () => {
             // arrange
+            const reqBody = {
+                currentPage: 2,
+                pageSize: 5
+            }
+
+            const offset = (reqBody.currentPage - 1) * reqBody.pageSize;
+            const limit = reqBody.pageSize;
+        
             const stubGetAll = sandbox.stub(RideManager.prototype, 'getAll');
-            stubGetAll.resolves([]);
+            stubGetAll.withArgs({ offset, limit }).resolves({ resArray: [], count: 0});
 
             // act
-            const res = await request(app).get('/rides');
+            const res = await request(app).get('/rides').send(reqBody);
 
             // assert
             expect(res.statusCode).toEqual(404);
