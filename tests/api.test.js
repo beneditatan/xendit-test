@@ -262,7 +262,7 @@ describe('API tests', () => {
             expect(res.body.message).toEqual('Rider name must be a non empty string');
         });
 
-        it('should return 400 given invalid riderName', async () => {
+        it('should return 400 given invalid driverName', async () => {
             // arrange
             const invalidObj = getRideObject();
             invalidObj.setDriverName(null);
