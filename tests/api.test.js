@@ -14,18 +14,6 @@ const buildSchemas = require('../src/schemas');
 
 
 describe('API tests', () => {
-    before((done) => {
-        db.serialize((err) => { 
-            if (err) {
-                return done(err);
-            }
-
-            buildSchemas(db);
-
-            done();
-        });
-    });
-    
     const START_LAT = -6.347617;
 	const START_LONG = 106.826691;
 	const END_LAT = -6.193758;
