@@ -15,14 +15,14 @@ const { ErrorCode } = require('./core');
 module.exports = (db, rm) => {
     app.get('/health', (req, res) => res.send('Healthy'));
 
-    app.post('/rides', jsonParser, (req, res) => {
-        const startLatitude = Number(req.body.start_lat);
-        const startLongitude = Number(req.body.start_long);
-        const endLatitude = Number(req.body.end_lat);
-        const endLongitude = Number(req.body.end_long);
-        const riderName = req.body.rider_name;
-        const driverName = req.body.driver_name;
-        const driverVehicle = req.body.driver_vehicle;
+    app.post('/rides', jsonParser, async (req, res) => {
+        const startLatitude = Number(req.body.startLat);
+        const startLongitude = Number(req.body.startLong);
+        const endLatitude = Number(req.body.endLat);
+        const endLongitude = Number(req.body.endLong);
+        const riderName = req.body.riderName;
+        const driverName = req.body.driverName;
+        const driverVehicle = req.body.driverVehicle;
 
         if (startLatitude < -90 || startLatitude > 90 || startLongitude < -180 || startLongitude > 180) {
             return res.send({
@@ -59,27 +59,48 @@ module.exports = (db, rm) => {
             });
         }
 
-        var values = [req.body.start_lat, req.body.start_long, req.body.end_lat, req.body.end_long, req.body.rider_name, req.body.driver_name, req.body.driver_vehicle];
+        // var values = [req.body.start_lat, req.body.start_long, req.body.end_lat, req.body.end_long, req.body.rider_name, req.body.driver_name, req.body.driver_vehicle];
         
-        const result = db.run('INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)', values, function (err) {
-            if (err) {
-                return res.send({
-                    error_code: 'SERVER_ERROR',
-                    message: 'Unknown error'
-                });
-            }
+        // const result = db.run('INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)', values, function (err) {
+        //     if (err) {
+        //         return res.send({
+        //             error_code: 'SERVER_ERROR',
+        //             message: 'Unknown error'
+        //         });
+        //     }
 
-            db.all('SELECT * FROM Rides WHERE rideID = ?', this.lastID, function (err, rows) {
-                if (err) {
-                    return res.send({
-                        error_code: 'SERVER_ERROR',
-                        message: 'Unknown error'
-                    });
-                }
+        //     db.all('SELECT * FROM Rides WHERE rideID = ?', this.lastID, function (err, rows) {
+        //         if (err) {
+        //             return res.send({
+        //                 error_code: 'SERVER_ERROR',
+        //                 message: 'Unknown error'
+        //             });
+        //         }
 
-                res.send(rows);
+        //         res.send(rows);
+        //     });
+        // });
+        const rideObj = {
+            startLat: startLatitude,
+            startLong: startLongitude,
+            endLat: endLatitude,
+            endLong: endLongitude,
+            riderName: riderName,
+            driverName: driverName,
+            driverVehicle: driverVehicle,
+        }
+
+        try {
+            const savedObj = await rm.save(rideObj);
+            res.status(200);
+            res.send(savedObj.toJSON());
+        } catch (error) {
+            res.status(500)
+            return res.send({
+                error_code: ErrorCode.SERVER_ERROR,
+                message: 'Unknown error'
             });
-        });
+        }
     });
 
     app.get('/rides', async (req, res) => {
