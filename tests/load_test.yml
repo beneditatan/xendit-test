@@ -1,0 +1,27 @@
+config:
+    target: 'http://localhost:8010'
+    phases:
+        - duration: 30
+          arrivalRate: 20
+    ensure:
+        p99: 50
+scenarios:
+    - flow:
+        - post:
+            url: "/rides"
+            json:
+                startLat: "-6.347617"
+                startLong: "106.826691"
+                endLat: "-6.193758"
+                endLong: "106.801613"
+                riderName: "Benedita"
+                driverName: "Samuel"
+                driverVehicle: "Toyota"
+        - get:
+            url: "/rides"
+            json: 
+                pageSize: 5
+                currentPage: 1
+        - get:
+            url: "/rides/1"
+  
