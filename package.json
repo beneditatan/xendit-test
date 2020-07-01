@@ -16,8 +16,13 @@
   "author": "Bo",
   "license": "ISC",
   "dependencies": {
+    "@sinonjs/referee": "^6.0.1",
+    "assert": "^2.0.0",
     "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "express": "^4.16.4",
+    "sinon": "^9.0.2",
     "sqlite3": "^4.0.6",
     "swagger-ui-express": "^4.1.4"
   },
