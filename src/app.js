@@ -27,7 +27,7 @@ module.exports = (db, rm, logger) => {
             riderName: req.body.riderName,
             driverName: req.body.driverName,
             driverVehicle: req.body.driverVehicle,
-        }
+        };
 
         try {
             APIValidator.validatePostRideRequest(rideObj);
@@ -37,7 +37,7 @@ module.exports = (db, rm, logger) => {
             return res.send({
                 error_code: error.errorCode,
                 message: error.message
-            })
+            });
         }
 
         try {
@@ -46,7 +46,7 @@ module.exports = (db, rm, logger) => {
             res.send(savedObj.toJSON());
         } catch (error) {
             logger.error(`${new Date()} POST /rides - ${ErrorCode.SERVER_ERROR} - ${error.message}`);
-            res.status(500)
+            res.status(500);
             return res.send({
                 error_code: ErrorCode.SERVER_ERROR,
                 message: error.message
@@ -86,7 +86,7 @@ module.exports = (db, rm, logger) => {
                     error_code: ErrorCode.RIDES_NOT_FOUND_ERROR,
                     message: errMsg
                 }
-            )
+            );
         }
     });
 
@@ -99,7 +99,7 @@ module.exports = (db, rm, logger) => {
             res.status(200);
             res.send(obj);
         } catch (err) {
-            if (err.constructor.name === "ObjectNotFound") {
+            if (err.constructor.name === 'ObjectNotFound') {
                 logger.error(`${new Date()} GET /rides/:rideID - ${err.errorCode} - ${err.message}`);
                 res.status(404);
                 res.send(
@@ -107,7 +107,7 @@ module.exports = (db, rm, logger) => {
                         error_code: err.errorCode,
                         message: err.message
                     }
-                )
+                );
             } else {
                 logger.error(`${new Date()} GET /rides/:rideID - ${ErrorCode.SERVER_ERROR} - ${err.message}`);
                 res.status(500);

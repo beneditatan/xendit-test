@@ -2,7 +2,7 @@
 
 const request = require('supertest');
 const sinon = require('sinon');
-const { expect } = require("@sinonjs/referee");
+const { expect } = require('@sinonjs/referee');
 const { ObjectNotFound, ErrorCode, logger } = require('../src/core');
 const { Ride, RideManager } = require('../src/models');
 
@@ -22,32 +22,32 @@ describe('API tests', () => {
 
             buildSchemas(db);
             done();
-		});
+        });
 		
     });
     
     const START_LAT = -6.347617;
-	const START_LONG = 106.826691;
-	const END_LAT = -6.193758;
-	const END_LONG = 106.801613;
-	const RIDER_NAME = 'Benedita';
-	const DRIVER_NAME = 'Samuel';
+    const START_LONG = 106.826691;
+    const END_LAT = -6.193758;
+    const END_LONG = 106.801613;
+    const RIDER_NAME = 'Benedita';
+    const DRIVER_NAME = 'Samuel';
     const DRIVER_VEHICLE = 'Toyota Avanza';
     const CREATED = '2020-06-30 13:13:08';
 
-	const getRideObject = () => {
-		const rideObj = new Ride();
-		rideObj.setStartLat(START_LAT);
-		rideObj.setStartLong(START_LONG);
-		rideObj.setEndLat(END_LAT);
-		rideObj.setEndLong(END_LONG);
-		rideObj.setRiderName(RIDER_NAME);
-		rideObj.setDriverName(DRIVER_NAME);
+    const getRideObject = () => {
+        const rideObj = new Ride();
+        rideObj.setStartLat(START_LAT);
+        rideObj.setStartLong(START_LONG);
+        rideObj.setEndLat(END_LAT);
+        rideObj.setEndLong(END_LONG);
+        rideObj.setRiderName(RIDER_NAME);
+        rideObj.setDriverName(DRIVER_NAME);
         rideObj.setDriverVehicle(DRIVER_VEHICLE);
         rideObj.setCreated(CREATED);
 		
-		return rideObj
-	}
+        return rideObj;
+    };
 
     describe('GET /health', () => {
         it('should return health', (done) => {
@@ -63,11 +63,11 @@ describe('API tests', () => {
 
         beforeEach(() => {
             sandbox = sinon.createSandbox();
-        })
+        });
 
         afterEach(() => {
             sandbox.restore();
-        })
+        });
 
         it('should return 200 when ID exists', async () => {
             // arrange
@@ -80,7 +80,7 @@ describe('API tests', () => {
             stubGetById.withArgs(testID).resolves(expectedObj);
 
             // act
-            const res = await request(app).get(`/rides/${testID}`)
+            const res = await request(app).get(`/rides/${testID}`);
 
             // assert
             expect(res.statusCode).toEqual(200);
@@ -103,11 +103,11 @@ describe('API tests', () => {
             stubGetById.withArgs(testID).throws(new ObjectNotFound('Could not find any rides'));
 
             const res = await request(app)
-                .get(`/rides/${testID}`)
+                .get(`/rides/${testID}`);
 
             expect(res.statusCode).toEqual(404);
             expect(res.body.error_code).toEqual(ErrorCode.RIDES_NOT_FOUND_ERROR);
-        })
+        });
     });
 
     describe('GET /rides', () => {
@@ -126,7 +126,7 @@ describe('API tests', () => {
             const reqBody = {
                 currentPage: 2,
                 pageSize: 5
-            }
+            };
 
             const offset = (reqBody.currentPage - 1) * reqBody.pageSize;
             const limit = reqBody.pageSize;
@@ -144,8 +144,8 @@ describe('API tests', () => {
 
             // act
             const res = await request(app)
-                                .get('/rides')
-                                .send(reqBody);
+                .get('/rides')
+                .send(reqBody);
 
             // assert
             expect(res.statusCode).toEqual(200);
@@ -177,7 +177,7 @@ describe('API tests', () => {
             const reqBody = {
                 currentPage: 2,
                 pageSize: 5
-            }
+            };
 
             const offset = (reqBody.currentPage - 1) * reqBody.pageSize;
             const limit = reqBody.pageSize;
@@ -191,7 +191,7 @@ describe('API tests', () => {
             // assert
             expect(res.statusCode).toEqual(404);
             expect(res.body.error_code).toEqual(ErrorCode.RIDES_NOT_FOUND_ERROR);
-        })
+        });
     });
 
     describe('POST /rides', () => {
@@ -219,8 +219,8 @@ describe('API tests', () => {
 
             // act
             const res = await request(app)
-                                .post('/rides')
-                                .send(reqBody);
+                .post('/rides')
+                .send(reqBody);
 
             // assert
             expect(res.statusCode).toEqual(200);
@@ -242,11 +242,11 @@ describe('API tests', () => {
 
             // act
             const res = await request(app)
-                                .post('/rides')
-                                .send(invalidObj.toJSON())
+                .post('/rides')
+                .send(invalidObj.toJSON());
 
             // assert
-            expect(res.statusCode).toEqual(400)
+            expect(res.statusCode).toEqual(400);
             expect(res.body.error_code).toEqual(ErrorCode.VALIDATION_ERROR);
             expect(res.body.message).toEqual('Start latitude and longitude must be between -90 - 90 and -180 to 180 degrees respectively');
         });
@@ -258,11 +258,11 @@ describe('API tests', () => {
 
             // act
             const res = await request(app)
-                                .post('/rides')
-                                .send(invalidObj.toJSON())
+                .post('/rides')
+                .send(invalidObj.toJSON());
 
             // assert
-            expect(res.statusCode).toEqual(400)
+            expect(res.statusCode).toEqual(400);
             expect(res.body.error_code).toEqual(ErrorCode.VALIDATION_ERROR);
             expect(res.body.message).toEqual('End latitude and longitude must be between -90 - 90 and -180 to 180 degrees respectively');
         });
@@ -274,11 +274,11 @@ describe('API tests', () => {
 
             // act
             const res = await request(app)
-                                .post('/rides')
-                                .send(invalidObj.toJSON())
+                .post('/rides')
+                .send(invalidObj.toJSON());
 
             // assert
-            expect(res.statusCode).toEqual(400)
+            expect(res.statusCode).toEqual(400);
             expect(res.body.error_code).toEqual(ErrorCode.VALIDATION_ERROR);
             expect(res.body.message).toEqual('Rider name must be a non empty string');
         });
@@ -290,11 +290,11 @@ describe('API tests', () => {
 
             // act
             const res = await request(app)
-                                .post('/rides')
-                                .send(invalidObj.toJSON())
+                .post('/rides')
+                .send(invalidObj.toJSON());
 
             // assert
-            expect(res.statusCode).toEqual(400)
+            expect(res.statusCode).toEqual(400);
             expect(res.body.error_code).toEqual(ErrorCode.VALIDATION_ERROR);
             expect(res.body.message).toEqual('Driver name must be a non empty string');
         });
@@ -306,11 +306,11 @@ describe('API tests', () => {
 
             // act
             const res = await request(app)
-                                .post('/rides')
-                                .send(invalidObj.toJSON())
+                .post('/rides')
+                .send(invalidObj.toJSON());
 
             // assert
-            expect(res.statusCode).toEqual(400)
+            expect(res.statusCode).toEqual(400);
             expect(res.body.error_code).toEqual(ErrorCode.VALIDATION_ERROR);
             expect(res.body.message).toEqual('Driver vehicle name must be a non empty string');
         });

@@ -4,4 +4,4 @@ const RideManager = require('./ridemanager');
 module.exports = {
     Ride,
     RideManager
-}
+};

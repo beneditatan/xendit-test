@@ -13,8 +13,8 @@ class DBUtil {
                 }
 
                 resolve(this);
-            })
-        })
+            });
+        });
     }
 
     asyncDbAll(query) {
@@ -25,8 +25,8 @@ class DBUtil {
                 }
 
                 resolve(rows);
-            })
-        })
+            });
+        });
     }
 }
 
