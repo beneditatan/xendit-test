@@ -7,12 +7,13 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "nyc mocha tests && npm run lint",
+    "test": "nyc mocha tests",
     "start": "nodemon index.js",
     "lint": "eslint '**/*.js'"
   },
   "pre-push": [
-    "test"
+    "test",
+    "lint"
   ],
   "keywords": [
     "Xendit"
