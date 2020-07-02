@@ -29,9 +29,9 @@ class RideManager {
             throw error;
         }
 
-        const selectQuery = `SELECT * FROM Rides WHERE rideID = ${res.lastID}`;
+        const selectQuery = `SELECT * FROM Rides WHERE rideID = ?`;
         try {
-            const rows = await this.dbUtil.asyncDbAll(selectQuery);
+            const rows = await this.dbUtil.asyncDbAll(selectQuery, [res.lastID]);
             // TODO: check if rows length is 1
             return Ride.fromJSON(rows[0]);
         } catch (error) {
@@ -40,10 +40,10 @@ class RideManager {
     }
 
     async getById(id) {
-        const query = `SELECT * FROM Rides WHERE rideID = ${id}`;
+        const query = `SELECT * FROM Rides WHERE rideID = ?`;
         let rows;
         try {
-            rows = await this.dbUtil.asyncDbAll(query);
+            rows = await this.dbUtil.asyncDbAll(query, [id]);
         } catch (error) {
             throw error;
         }
@@ -59,10 +59,10 @@ class RideManager {
         const { limit, offset } = pagination;
 
         const query = `SELECT * FROM Rides ORDER BY rideID ASC 
-                        LIMIT ${limit} OFFSET ${offset}`;
+                        LIMIT ? OFFSET ?`;
         let rows;
         try {
-            rows = await this.dbUtil.asyncDbAll(query);
+            rows = await this.dbUtil.asyncDbAll(query, [limit, offset]);
         } catch (error) {
             throw error;
         }
@@ -87,7 +87,7 @@ class RideManager {
         const query = `SELECT COUNT(*) AS rows FROM Rides`;
         let rows;
         try {
-            rows = await this.dbUtil.asyncDbAll(query);
+            rows = await this.dbUtil.asyncDbAll(query, []);
         } catch (error) {
             throw error;
         }

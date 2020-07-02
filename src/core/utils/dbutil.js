@@ -17,9 +17,9 @@ class DBUtil {
         })
     }
 
-    asyncDbAll(query) {
+    asyncDbAll(query, params) {
         return new Promise((resolve, reject) => {
-            this.db.all(query, function(err, rows) {
+            this.db.all(query, params, function(err, rows) {
                 if(err) {
                     return reject(err);
                 }
