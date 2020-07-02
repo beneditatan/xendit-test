@@ -27,6 +27,9 @@
         ],
         "no-redeclare": "off",
         "no-undef": "off",
-        "no-undef-init": "off"
+        "no-undef-init": "off",
+        "no-unused-vars": "warn",
+        "no-useless-catch": "warn",
+        "no-prototype-builtins": "off"
     }
 }
