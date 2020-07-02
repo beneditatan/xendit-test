@@ -40,7 +40,7 @@ class Ride {
         if (obj.getRideID() !== null) {
             jsonObj.rideID = obj.getRideID();  
         }
-        if (obj.getRideID() != null) {
+        if (obj.getCreated() != null) {
             jsonObj.created = obj.getCreated();
         }
 
