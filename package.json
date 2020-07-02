@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha tests && npm run lint",
+    "test": "nyc mocha tests && npm run lint",
     "start": "nodemon index.js",
     "lint": "eslint '**/*.js'"
   },
@@ -32,6 +32,7 @@
   "devDependencies": {
     "eslint": "^7.3.1",
     "mocha": "^6.1.4",
+    "nyc": "^15.1.0",
     "supertest": "^4.0.2"
   }
 }
