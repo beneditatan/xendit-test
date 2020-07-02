@@ -46,7 +46,7 @@ module.exports = (db, rm) => {
             res.status(500)
             return res.send({
                 error_code: ErrorCode.SERVER_ERROR,
-                message: 'Unknown error'
+                message: error.message
             });
         }
     });
@@ -62,7 +62,7 @@ module.exports = (db, rm) => {
             res.status(500);
             res.send({
                 error_code: ErrorCode.SERVER_ERROR,
-                message: 'Unknown error'
+                message: error.message
             });
         }
 
@@ -97,14 +97,14 @@ module.exports = (db, rm) => {
                 res.send(
                     {
                         error_code: err.errorCode,
-                        message: 'Could not find any rides'
+                        message: err.message
                     }
                 )
             } else {
                 res.status(500);
                 res.send({
                     error_code: ErrorCode.SERVER_ERROR,
-                    message: 'Unknown error'
+                    message: err.message
                 });
             }
         }

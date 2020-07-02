@@ -32,8 +32,12 @@ class RideManager {
         const selectQuery = `SELECT * FROM Rides WHERE rideID = ${res.lastID}`;
         try {
             const rows = await this.dbUtil.asyncDbAll(selectQuery);
-            // TODO: check if rows length is 1
-            return Ride.fromJSON(rows[0]);
+            if (rows.length > 0) {
+                return Ride.fromJSON(rows[0]);
+            } else {
+                throw new Error("Inserted object not found");
+            }
+            
         } catch (error) {
             throw error;
         }
