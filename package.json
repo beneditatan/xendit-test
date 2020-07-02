@@ -11,6 +11,9 @@
     "start": "nodemon index.js",
     "lint": "eslint '**/*.js'"
   },
+  "pre-push": [
+    "test"
+  ],
   "keywords": [
     "Xendit"
   ],
@@ -34,6 +37,7 @@
     "eslint": "^7.3.1",
     "mocha": "^6.1.4",
     "nyc": "^15.1.0",
+    "pre-push": "^0.1.1",
     "supertest": "^4.0.2"
   }
 }
