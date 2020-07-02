@@ -3,13 +3,13 @@
 const request = require('supertest');
 const sinon = require('sinon');
 const { expect } = require("@sinonjs/referee");
-const { ObjectNotFound, ErrorCode } = require('../src/core');
+const { ObjectNotFound, ErrorCode, logger } = require('../src/core');
 const { Ride, RideManager } = require('../src/models');
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(':memory:');
 const rm = new RideManager(db);
-const app = require('../src/app')(db, rm);
+const app = require('../src/app')(db, rm, logger);
 const buildSchemas = require('../src/schemas');
 
 
