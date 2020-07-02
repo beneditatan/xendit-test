@@ -9,7 +9,7 @@
   "scripts": {
     "test": "nyc mocha tests",
     "start": "nodemon index.js",
-    "lint": "eslint '**/*.js'"
+    "lint": "eslint '**/*.js' --fix"
   },
   "pre-push": [
     "test",

@@ -22,38 +22,25 @@ class RideManager {
             obj.driverName,
             obj.driverVehicle
         ];
-        let res;
-        try {
-            res = await this.dbUtil.asyncDbRun(query, values);
-        } catch (error) {
-            throw error;
-        }
+
+        const res = await this.dbUtil.asyncDbRun(query, values);
 
         const selectQuery = `SELECT * FROM Rides WHERE rideID = ${res.lastID}`;
-        try {
-            const rows = await this.dbUtil.asyncDbAll(selectQuery);
-            if (rows.length > 0) {
-                return Ride.fromJSON(rows[0]);
-            } else {
-                throw new Error("Inserted object not found");
-            }
-            
-        } catch (error) {
-            throw error;
+        const rows = await this.dbUtil.asyncDbAll(selectQuery);
+        if (rows.length > 0) {
+            return Ride.fromJSON(rows[0]);
+        } else {
+            throw new Error('Inserted object not found');
         }
     }
 
     async getById(id) {
         const query = `SELECT * FROM Rides WHERE rideID = ${id}`;
-        let rows;
-        try {
-            rows = await this.dbUtil.asyncDbAll(query);
-        } catch (error) {
-            throw error;
-        }
+        
+        const rows = await this.dbUtil.asyncDbAll(query);
 
         if (rows.length === 0) {
-            throw new ObjectNotFound("Ride with given ID is not found");
+            throw new ObjectNotFound('Ride with given ID is not found');
         } else {
             return Ride.fromJSON(rows[0]);
         }
@@ -64,37 +51,24 @@ class RideManager {
 
         const query = `SELECT * FROM Rides ORDER BY rideID ASC 
                         LIMIT ${limit} OFFSET ${offset}`;
-        let rows;
-        try {
-            rows = await this.dbUtil.asyncDbAll(query);
-        } catch (error) {
-            throw error;
-        }
 
-        let resArray = []
+        const rows = await this.dbUtil.asyncDbAll(query);
+
+        let resArray = [];
         for (var i = 0; i < rows.length; i++) {
             const obj = Ride.fromJSON(rows[i]);
             resArray.push(obj);
         }
 
-        let count;
-        try {
-            count = await this.getCount();
-        } catch (error) {
-            throw error;
-        }
+        const count = await this.getCount();
 
         return { resArray, count };
     }
 
     async getCount() {
-        const query = `SELECT COUNT(*) AS rows FROM Rides`;
-        let rows;
-        try {
-            rows = await this.dbUtil.asyncDbAll(query);
-        } catch (error) {
-            throw error;
-        }
+        const query = 'SELECT COUNT(*) AS rows FROM Rides';
+
+        const rows = await this.dbUtil.asyncDbAll(query);
 
         return rows[0].rows;
     }
